@@ -17,21 +17,35 @@ UIView *smallBackgroundView;
 			if (!([self.text isEqualToString:@"−"] || ([self.text isEqualToString:@"×"]) || ([self.text isEqualToString:@"÷"]) || ([self.text isEqualToString:@"+"]) || ([self.text isEqualToString:@"="]))) {
 
 				UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-				if (!(UIDeviceOrientationIsLandscape(orientation))){
-					self.font = [UIFont systemFontOfSize:45];
-					self.layer.backgroundColor = [UIColor colorWithRed:0.22 green:0.20 blue:0.20 alpha:1.0].CGColor;
+				if (!(UIDeviceOrientationIsLandscape(orientation)) && !([self.text isEqualToString:@"0"])) {
+					if (!(selfFrame.size.height == 116.5 || (selfFrame.size.height == 51.5))) {
+						self.font = [UIFont systemFontOfSize:45];
+						self.layer.backgroundColor = [UIColor colorWithRed:0.22 green:0.20 blue:0.20 alpha:1.0].CGColor;
+						UITapGestureRecognizer *normalTap=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(deselectAction)];
+						[normalTap setNumberOfTapsRequired:1];
+						normalTap.cancelsTouchesInView = NO;
+						[self addGestureRecognizer:normalTap];
+					}
 				} else if ((selfFrame.origin.x < 400)) {
-					self.font = [UIFont systemFontOfSize:20];
-					self.layer.backgroundColor = [UIColor colorWithRed:0.14 green:0.14 blue:0.14 alpha:1.0].CGColor;
+					if (!(selfFrame.size.height == 116.5 || (selfFrame.size.height == 51.5))) {
+						self.font = [UIFont systemFontOfSize:20];
+						self.layer.backgroundColor = [UIColor colorWithRed:0.14 green:0.14 blue:0.14 alpha:1.0].CGColor;
+					}
 					//Scientific keypad buttons
-				} else {
-					self.font = [UIFont systemFontOfSize:25];
-					self.layer.backgroundColor = [UIColor colorWithRed:0.22 green:0.20 blue:0.20 alpha:1.0].CGColor;
+				} else if (![self.text isEqualToString:@"0"]) {
+					//if (!(selfFrame.size.height == 116.5 || (selfFrame.size.height == 51.5))) {
+						self.font = [UIFont systemFontOfSize:25];
+						self.layer.backgroundColor = [UIColor colorWithRed:0.22 green:0.20 blue:0.20 alpha:1.0].CGColor;
+						UITapGestureRecognizer *scienceTap=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(deselectAction)];
+						[scienceTap setNumberOfTapsRequired:1];
+						scienceTap.cancelsTouchesInView = NO;
+						[self addGestureRecognizer:scienceTap];
+					//}
 				}
 				self.textColor = [UIColor whiteColor];
 
 				//Normal keys
-			} else if (!([self.text isEqualToString:@"."])) {
+			} else if (!([self.text isEqualToString:@"0"])) {
 				self.layer.backgroundColor = [UIColor colorWithRed:1.00 green:0.56 blue:0.00 alpha:1.0].CGColor;
 				UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 				if (!(UIDeviceOrientationIsLandscape(orientation))){
@@ -45,15 +59,6 @@ UIView *smallBackgroundView;
 				tap.cancelsTouchesInView = NO;
 				[self addGestureRecognizer:tap];
 				//Orange Divide and multiply etc.
-			} else {
-				self.layer.backgroundColor = [UIColor colorWithRed:0.22 green:0.20 blue:0.20 alpha:1.0].CGColor;
-				UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-				if (!(UIDeviceOrientationIsLandscape(orientation))){
-					self.font = [UIFont systemFontOfSize:35];
-				} else {
-					self.font = [UIFont systemFontOfSize:25];
-				}
-				//If it's a '.'
 			}
 		} else {
 			//The AC Button & Friends
@@ -66,41 +71,112 @@ UIView *smallBackgroundView;
 				self.font = [UIFont systemFontOfSize:25];
 			}
 		}
-		self.layer.cornerRadius = self.bounds.size.height / 2;
+		if (!(selfFrame.size.height == 116.5 || (selfFrame.size.height == 51.5))) {
+			self.layer.cornerRadius = self.bounds.size.height / 2;
+		}
 
-	} else {
+	} else if (![self.text isEqualToString:@"0"]) {
+
 		self.textColor = [UIColor whiteColor];
 	}
-	//      self.translatesAutoresizingMaskIntoConstraints = NO;
-	self.transform = CGAffineTransformMakeScale(0.8f, 0.8f);
-}
-
--(void)setFrame {
-
-	if ([self.text isEqualToString:@"0"]) {
-		CGRect frame = self.frame;
-		CGFloat currentWidth = frame.size.width;
-		frame.size.width = currentWidth *2;
+	if (![self.text isEqualToString:@"0"]) {
+		if (!(selfFrame.size.height == 116.5 || (selfFrame.size.height == 51.5))) {
+			self.transform = CGAffineTransformMakeScale(0.8f, 0.8f);
+		}
 	}
 }
 
 
 - (void)_updateAutoresizingConstraints {
-	self.transform = CGAffineTransformMakeScale(0.8f, 0.8f);
+	if (![self.text isEqualToString:@"0"]) {
+		CGRect selfFrame = self.frame;
+		if (!(selfFrame.size.height == 116.5 || (selfFrame.size.height == 51.5))) {
+			self.transform = CGAffineTransformMakeScale(0.8f, 0.8f);
+		}
+	}
 }
 
 - (void)_updateContentSizeConstraints{
-	self.transform = CGAffineTransformMakeScale(0.8f, 0.8f);
+	if (![self.text isEqualToString:@"0"]) {
+		CGRect selfFrame = self.frame;
+		if (!(selfFrame.size.height == 116.5 || (selfFrame.size.height == 51.5))) {
+			self.transform = CGAffineTransformMakeScale(0.8f, 0.8f);
+		}
+	}
 }
 
 %new
 
 - (void)tapAction {
-	[UIView animateWithDuration:0.0 animations:^{
-		self.layer.backgroundColor = [UIColor whiteColor].CGColor;
-		self.textColor = [UIColor colorWithRed:1.00 green:0.56 blue:0.00 alpha:1.0];
-	}];
+	if (![self.text isEqualToString:@"="]) {
+		[UIView animateWithDuration:0.0 animations:^{
+			self.layer.backgroundColor = [UIColor whiteColor].CGColor;
+			self.textColor = [UIColor colorWithRed:1.00 green:0.56 blue:0.00 alpha:1.0];
+			for (UILabel *button in self.superview.subviews) {
+				if ([button isKindOfClass:[UILabel class]]) {
+					if (([button.text isEqualToString:@"−"] || ([button.text isEqualToString:@"×"]) || ([button.text isEqualToString:@"÷"]) || ([button.text isEqualToString:@"+"]) || ([button.text isEqualToString:@"="]))) {
+						button.layer.backgroundColor = [UIColor colorWithRed:1.00 green:0.56 blue:0.00 alpha:1.0].CGColor;
+						button.textColor = [UIColor whiteColor];
+					} else if (![button.text isEqualToString:@"0"]) {
+						CGRect selfFrame = button.frame;
+						if (!(selfFrame.size.height == 116.5 || (selfFrame.size.height == 51.5))) {
+							if (!([self.text isEqualToString:@"AC"] || ([self.text isEqualToString:@"C"]) || ((selfFrame.origin.x == 187.5) && (selfFrame.origin.y == 1.5)) || ([self.text isEqualToString:@"\%"])) && !([button.text isEqualToString:@"0"])) {
+								UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+								if (!(UIDeviceOrientationIsLandscape(orientation)) && !([self.text isEqualToString:@"0"])) {
+									if (!(selfFrame.size.height == 116.5 || (selfFrame.size.height == 51.5))) {
+										self.font = [UIFont systemFontOfSize:45];
+										self.layer.backgroundColor = [UIColor colorWithRed:0.22 green:0.20 blue:0.20 alpha:1.0].CGColor;
+									}
+								} else if ((selfFrame.origin.x < 400)) {
+									if (!(selfFrame.size.height == 116.5 || (selfFrame.size.height == 51.5))) {
+										self.font = [UIFont systemFontOfSize:20];
+										self.layer.backgroundColor = [UIColor colorWithRed:0.14 green:0.14 blue:0.14 alpha:1.0].CGColor;
+									}
+									//Scientific keypad buttons
+								} else if (!(selfFrame.size.height == 116.5 || (selfFrame.size.height == 51.5) || (![self.text isEqualToString:@"0"]))) {
+										self.font = [UIFont systemFontOfSize:25];
+										self.layer.backgroundColor = [UIColor colorWithRed:0.22 green:0.20 blue:0.20 alpha:1.0].CGColor;
+
+								}
+								self.textColor = [UIColor whiteColor];
+							} else if (![self.text isEqualToString:@"0"]) {
+								self.layer.backgroundColor = [UIColor colorWithRed:0.78 green:0.78 blue:0.78 alpha:1.0].CGColor;
+								self.textColor = [UIColor blackColor];
+								UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+								if (!(UIDeviceOrientationIsLandscape(orientation))){
+									self.font = [UIFont systemFontOfSize:40];
+								} else {
+									self.font = [UIFont systemFontOfSize:25];
+								}
+							}
+						} else if (![self.text isEqualToString:@"0"]) {
+							self.textColor = [UIColor whiteColor];
+						}
+					}
+				}
+			}
+			if (![self.text isEqualToString:@"="]) {
+				self.layer.backgroundColor = [UIColor whiteColor].CGColor;
+				self.textColor = [UIColor colorWithRed:1.00 green:0.56 blue:0.00 alpha:1.0];
+			}
+		}];
+	}
 }
+
+%new
+
+-(void)deselectAction {
+
+	//We won't bother with the animations for now
+	for (UILabel *actionButton in self.superview.subviews) {
+		if ([actionButton isKindOfClass:[UILabel class]]) {
+			if (([actionButton.text isEqualToString:@"−"] || ([actionButton.text isEqualToString:@"×"]) || ([actionButton.text isEqualToString:@"÷"]) || ([actionButton.text isEqualToString:@"+"]) || ([actionButton.text isEqualToString:@"="]))) {
+				actionButton.layer.backgroundColor = [UIColor colorWithRed:1.00 green:0.56 blue:0.00 alpha:1.0].CGColor;
+				actionButton.textColor = [UIColor whiteColor];
+			}
+			}
+		}
+	}
 
 %end
 
@@ -128,15 +204,23 @@ UIView *smallBackgroundView;
 		UILabel *plusMinusButton = temp[1];
 		UILabel *dotButton = temp[18];
 		UILabel *zeroButton = temp[16];
-		plusMinusButton.backgroundColor = [UIColor colorWithRed:0.78 green:0.78 blue:0.78 alpha:1.0];
-		plusMinusButton.textColor = [UIColor blackColor];
-		[plusMinusButton layer].cornerRadius = plusMinusButton.bounds.size.height / 2;
-		dotButton.font = [UIFont systemFontOfSize:35];
-		CGRect frame = zeroButton.frame;
-		CGFloat currentWidth = frame.size.width;
-		frame.size.width = currentWidth *2.1;
-		zeroButton.frame = frame;
-		zeroButton.textAlignment = NSTextAlignmentLeft;
+		if (![plusMinusButton.text isEqualToString:@")"]) {
+			plusMinusButton.backgroundColor = [UIColor colorWithRed:0.78 green:0.78 blue:0.78 alpha:1.0];
+			plusMinusButton.textColor = [UIColor blackColor];
+			plusMinusButton.clipsToBounds = YES;
+			[plusMinusButton layer].cornerRadius = plusMinusButton.bounds.size.height / 2;
+			dotButton.font = [UIFont systemFontOfSize:35];
+			CGRect frame = zeroButton.frame;
+			frame.origin.x = 1.5;
+			frame.size.width = 185;
+			zeroButton.frame = frame;
+			zeroButton.textAlignment = NSTextAlignmentLeft;
+			zeroButton.font = [UIFont systemFontOfSize:25];
+			zeroButton.layer.backgroundColor = [UIColor colorWithRed:0.22 green:0.20 blue:0.20 alpha:1.0].CGColor;
+			zeroButton.textColor = [UIColor whiteColor];
+			zeroButton.transform = CGAffineTransformMakeScale(0.8f, 0.8f);
+
+		}
 	}
 	((KeypadView*)self).buttons = temp;
 
@@ -158,7 +242,7 @@ UIView *displayBackgroundView;
 
 %hook DisplayView
 -(void)layoutSubviews {
-
+	/*
 	CGRect displayFrame = [self layer].frame;
 	displayBackgroundView = [[UIView alloc] initWithFrame:displayFrame];
 	displayBackgroundView.backgroundColor = [UIColor blackColor];
@@ -167,6 +251,8 @@ UIView *displayBackgroundView;
 	[self sendSubviewToBack:displayBackgroundView];
 
 	[self layer].backgroundColor = [UIColor blackColor].CGColor;
+	*/
+	%orig;
 
 }
 %end
